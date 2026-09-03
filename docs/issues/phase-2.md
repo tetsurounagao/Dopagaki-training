@@ -1,6 +1,6 @@
 # Phase 2: 姿勢推定の導入（MediaPipe を Web Worker で）
 
-> GitHub Issue: [#4](https://github.com/tetsurounagao/Dopagaki-training/issues/4)
+> GitHub Issue: [#4](https://github.com/tetsurounagao/Dopagaki-training/issues/4) ／ PR #5
 > PR は "Closes #N" を含める。
 
 ## ゴール
