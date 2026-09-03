@@ -103,6 +103,8 @@ export interface PoseClientOptions {
   mirror?: boolean
   /** 目標推論 fps（フレーム間引き）。default 24 */
   targetFps?: number
+  /** 推論前にフレームを縮小する幅(px)。モバイルのスループット改善。default 480 */
+  resizeWidth?: number
 }
 
 export interface PoseClient {
@@ -127,4 +129,5 @@ export const DEFAULT_POSE_OPTIONS = {
   numPoses: 1,
   mirror: true,
   targetFps: 24,
+  resizeWidth: 480,
 } satisfies Required<PoseClientOptions>

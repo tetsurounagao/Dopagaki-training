@@ -127,7 +127,10 @@ export function createPoseClient(options: PoseClientOptions = {}): PoseClient {
       lastSentAt = now
       busy = true
       frameRate.mark(now)
-      createImageBitmap(video)
+      createImageBitmap(video, {
+        resizeWidth: opts.resizeWidth,
+        resizeQuality: 'low',
+      })
         .then((bitmap) => {
           if (!worker || !running) {
             bitmap.close()

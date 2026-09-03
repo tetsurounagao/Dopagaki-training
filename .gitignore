@@ -49,3 +49,6 @@ tmp/
 fixtures/
 *.mp4
 *.mov
+
+# MediaPipe の wasm / モデル（scripts/sync-mediapipe.mjs が生成）
+public/models/
