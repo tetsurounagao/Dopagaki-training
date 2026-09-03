@@ -49,3 +49,11 @@ tmp/
 fixtures/
 *.mp4
 *.mov
+
+# Cloudflare Wrangler（ローカル生成物）
+.wrangler/
+.dev.vars
+.dev.vars.*
+
+# MediaPipe の wasm / モデル（scripts/sync-mediapipe.mjs が生成）
+public/models/

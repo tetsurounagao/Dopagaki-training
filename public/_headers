@@ -1,5 +1,4 @@
-# Cloudflare Pages / Netlify 形式のヘッダ設定。
-# Vercel を使う場合は vercel.json の headers に同等の内容を置く。
+# Cloudflare Workers Static Assets（旧 Pages）/ Netlify 形式のヘッダ規則。
 
 /assets/*
   Cache-Control: public, max-age=31536000, immutable
