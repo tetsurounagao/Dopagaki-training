@@ -1,0 +1,12 @@
+{
+  // Cloudflare Workers Static Assets（旧 Pages）用の設定。
+  // SPA フォールバックは not_found_handling が担うので public/_redirects は置かない。
+  // ビルドは npm run build（dist/ 出力）。ヘッダ規則は public/_headers。
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "dopagaki-training",
+  "compatibility_date": "2026-08-31",
+  "observability": { "enabled": true },
+  "assets": {
+    "not_found_handling": "single-page-application",
+  },
+}
