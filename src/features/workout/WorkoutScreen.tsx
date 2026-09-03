@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import {
   currentMenu,
@@ -8,12 +8,20 @@ import {
   type WorkoutState,
 } from '../../app/machine'
 import { EXERCISE_BY_ID } from '../../store/exercises'
+import { createEffectsController } from '../../effects'
 import { useWorkout } from './useWorkout'
 
-// TODO(integration): nullEffects → createEffectsController()（担当 C の src/effects/index.ts）を注入する。
 export function WorkoutScreen() {
   const navigate = useNavigate()
-  const { phase, state, effects, dispatch, tapRep } = useWorkout()
+  const [fx] = useState(createEffectsController)
+  const canvasRef = useRef<HTMLDivElement>(null)
+  const { phase, state, effects, dispatch, tapRep } = useWorkout(fx)
+
+  useEffect(() => {
+    const el = canvasRef.current
+    if (el) void fx.mount(el)
+    return () => fx.unmount()
+  }, [fx])
 
   useEffect(() => {
     if (phase === 'error') {
@@ -22,28 +30,49 @@ export function WorkoutScreen() {
     }
   }, [phase, navigate])
 
-  if (phase === 'loading' || !state) return <Centered>読み込み中…</Centered>
-  if (phase === 'error')
-    return <Centered>読み込みに失敗しました。ホームに戻ります。</Centered>
-
   return (
-    <div
-      style={{
-        minHeight: '100dvh',
-        display: 'flex',
-        flexDirection: 'column',
-        maxWidth: 480,
-        margin: '0 auto',
-      }}
-    >
-      <TopBar onHome={() => dispatch({ type: 'GO_HOME' })} state={state} />
-      <div style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
-        <StateView
-          state={state}
-          effects={effects}
-          tapRep={tapRep}
-          dispatch={dispatch}
-        />
+    <div style={{ position: 'relative', minHeight: '100dvh' }}>
+      <div
+        ref={canvasRef}
+        aria-hidden
+        style={{
+          position: 'fixed',
+          inset: 0,
+          zIndex: 0,
+          pointerEvents: 'none',
+        }}
+      />
+      <div
+        style={{
+          position: 'relative',
+          zIndex: 1,
+          minHeight: '100dvh',
+          display: 'flex',
+          flexDirection: 'column',
+          maxWidth: 480,
+          margin: '0 auto',
+        }}
+      >
+        {phase === 'loading' || !state ? (
+          <Centered>読み込み中…</Centered>
+        ) : phase === 'error' ? (
+          <Centered>読み込みに失敗しました。ホームに戻ります。</Centered>
+        ) : (
+          <>
+            <TopBar
+              onHome={() => dispatch({ type: 'GO_HOME' })}
+              state={state}
+            />
+            <div style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
+              <StateView
+                state={state}
+                effects={effects}
+                tapRep={tapRep}
+                dispatch={dispatch}
+              />
+            </div>
+          </>
+        )}
       </div>
     </div>
   )
