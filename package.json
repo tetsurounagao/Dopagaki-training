@@ -13,9 +13,14 @@
     "format:check": "prettier --check .",
     "test": "vitest run",
     "test:watch": "vitest",
-    "gen:icons": "node scripts/gen-icons.mjs"
+    "gen:icons": "node scripts/gen-icons.mjs",
+    "sync-mediapipe": "node scripts/sync-mediapipe.mjs",
+    "postinstall": "node scripts/sync-mediapipe.mjs",
+    "predev": "node scripts/sync-mediapipe.mjs",
+    "prebuild": "node scripts/sync-mediapipe.mjs"
   },
   "dependencies": {
+    "@mediapipe/tasks-vision": "1.0.1",
     "dexie": "^4.0.11",
     "pixi.js": "8.20.1",
     "react": "^19.2.8",

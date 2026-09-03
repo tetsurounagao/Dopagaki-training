@@ -10,15 +10,42 @@ import {
 import { EXERCISE_BY_ID } from '../../store/exercises'
 import { createEffectsController } from '../../effects'
 import { useWorkout } from './useWorkout'
+import { useVision } from './useVision'
+import { CameraLayer } from './CameraLayer'
+import { DebugHud } from './DebugHud'
+import { useDebug, useSessionRecorder } from './useDebug'
+
+const VISION_STATES = new Set([
+  'exerciseSetup',
+  'calibration',
+  'countdown',
+  'setActive',
+  'setComplete',
+  'rest',
+  'setIntro',
+])
 
 export function WorkoutScreen() {
   const navigate = useNavigate()
   const [fx] = useState(createEffectsController)
-  const canvasRef = useRef<HTMLDivElement>(null)
+  const fxHostRef = useRef<HTMLDivElement>(null)
   const { phase, state, effects, dispatch, tapRep } = useWorkout(fx)
 
+  const visionActive =
+    phase === 'ready' && !!state && VISION_STATES.has(state.name)
+  const lowPower = state?.context.game.fever.active ?? false
+  const vision = useVision({ active: visionActive, lowPower })
+
+  const debug = useDebug()
+  const recorder = useSessionRecorder(vision.onFrame)
+
+  const handleTap = () => {
+    recorder.logEvent('rep')
+    tapRep()
+  }
+
   useEffect(() => {
-    const el = canvasRef.current
+    const el = fxHostRef.current
     if (el) void fx.mount(el)
     return () => fx.unmount()
   }, [fx])
@@ -32,20 +59,51 @@ export function WorkoutScreen() {
 
   return (
     <div style={{ position: 'relative', minHeight: '100dvh' }}>
+      <CameraLayer
+        vision={vision}
+        showSkeleton={debug.enabled && debug.showSkeleton}
+        minVisibility={0.5}
+      />
       <div
-        ref={canvasRef}
+        ref={fxHostRef}
         aria-hidden
         style={{
           position: 'fixed',
           inset: 0,
-          zIndex: 0,
+          zIndex: 2,
           pointerEvents: 'none',
         }}
       />
+      {debug.enabled && state && (
+        <DebugHud
+          vision={vision}
+          phase={state.name}
+          reps={state.context.reps}
+          minVisibility={0.5}
+          showSkeleton={debug.showSkeleton}
+          onToggleSkeleton={debug.toggleSkeleton}
+          recording={recorder.recording}
+          onToggleRecord={recorder.toggle}
+        />
+      )}
+      {!debug.enabled && (
+        <div
+          aria-hidden
+          onClick={debug.cornerTap}
+          style={{
+            position: 'fixed',
+            top: 0,
+            left: 0,
+            width: 56,
+            height: 56,
+            zIndex: 6,
+          }}
+        />
+      )}
       <div
         style={{
           position: 'relative',
-          zIndex: 1,
+          zIndex: 3,
           minHeight: '100dvh',
           display: 'flex',
           flexDirection: 'column',
@@ -67,7 +125,7 @@ export function WorkoutScreen() {
               <StateView
                 state={state}
                 effects={effects}
-                tapRep={tapRep}
+                tapRep={handleTap}
                 dispatch={dispatch}
               />
             </div>

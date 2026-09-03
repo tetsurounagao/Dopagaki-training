@@ -4,6 +4,8 @@ import { VitePWA } from 'vite-plugin-pwa'
 
 // https://vite.dev/config/
 export default defineConfig({
+  // new Worker(new URL('./poseWorker.ts', import.meta.url), { type: 'module' }) 用
+  worker: { format: 'es' },
   plugins: [
     react(),
     VitePWA({
@@ -32,8 +34,9 @@ export default defineConfig({
         ],
       },
       workbox: {
+        // MediaPipe の wasm/モデル(models/**)は precache しない（Phase 5 でオフライン対応時に検討）。
         globPatterns: ['**/*.{js,css,html,svg,png,woff2}'],
-        // MediaPipe の .task / .wasm は Phase 2 で追加する。大きいので上限を上げておく。
+        globIgnores: ['**/models/**'],
         maximumFileSizeToCacheInBytes: 8 * 1024 * 1024,
       },
       devOptions: { enabled: false },
