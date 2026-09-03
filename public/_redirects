@@ -1,0 +1,3 @@
+# SPA フォールバック（Cloudflare Pages / Netlify 形式）。
+# Vercel は Vite SPA を自動判定するため不要。
+/*  /index.html  200
