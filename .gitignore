@@ -44,3 +44,8 @@ coverage/
 .cache/
 .temp/
 tmp/
+
+# detector fixture 動画（重い。抽出後のランドマーク JSON のみコミットする）
+fixtures/
+*.mp4
+*.mov
