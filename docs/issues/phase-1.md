@@ -1,7 +1,7 @@
 # Phase 1: タップカウンタ版で「ドーパミンループ」を完成
 
-> GitHub Issue にそのまま貼れる本文。作成後、番号をこのファイル冒頭と PR に記載する。
-> Issue #: _(未作成)_
+> GitHub Issue: [#2](https://github.com/tetsurounagao/Dopagaki-training/issues/2)
+> PR は "Closes #2" を含める。
 
 ## ゴール
 
